@@ -3,7 +3,7 @@ import serial
 from waggle.plugin import Plugin
 from argparse import ArgumentParser
 from datetime import datetime, timezone
-
+import time
 
 def translate_units(units: str) -> str:
     if units == "M":
@@ -29,7 +29,7 @@ def main(*args):
     #print("Wind direction, wind speed, units")
 
     data_names = {"wind_speed": "env.wind.magnitude",
-                  "wind_directon": "env.wind.from_direction"}
+                  "wind_direction": "env.wind.from_direction"}
 
     meta = {"sensor": "windsonic60"}
 
@@ -47,24 +47,22 @@ def main(*args):
                 units=data_values[3]
                 status=data_values[4]
 
-                # get the UTC time stamp
-                timestamp = datetime.now(tz=timezone.utc).replace(tzinfo=None).timestamp()
-
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
-                                   meta={"units": units, **meta}, timestamp=timestamp)
+                                   meta={"units": units, **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", **meta}, timestamp=timestamp)
+                                   meta={"units": "degree", **meta})
                 else:
                     plugin.publish(data_names['wind_speed'], np.nan,
-                                   meta={"units": units, **meta}, timestamp=timestamp)
+                                   meta={"units": units, **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", **meta}, timestamp=timestamp)
-            except:
+                                   meta={"units": "degree", **meta})
+            except Exception as e:
                 print("keyboard interrupt")
+                print(e)
                 break
 
-    if not ser.closed():
+    if not ser.closed:
         ser.close()
 
 if __name__ == "__main__":
