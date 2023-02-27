@@ -48,12 +48,12 @@ def main(*args):
 
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
-                                   meta={"units": units, **meta})
+                                   meta={"units": translate_units(units), **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
                                    meta={"units": "degree", **meta})
                 else:
                     plugin.publish(data_names['wind_speed'], np.nan,
-                                   meta={"units": units, **meta})
+                                   meta={"units": translate_units(units), **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
                                    meta={"units": "degree", **meta})
             except Exception as e:
