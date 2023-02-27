@@ -28,7 +28,9 @@ def main(*args):
     #print("Wind direction, wind speed, units")
 
     data_names = {"wind_speed": "env.wind.magnitude",
-                  "wind_directon": "env.wind.direction"}
+                  "wind_directon": "env.wind.from_direction"}
+
+    meta = {"sensor": "windsonic60"}
 
     with Plugin() as plugin:
         while True:
@@ -49,14 +51,14 @@ def main(*args):
 
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
-                                   meta={"units": units}, timestamp=timestamp)
+                                   meta={"units": units, **meta}, timestamp=timestamp)
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree_north"}, timestamp=timestamp)
+                                   meta={"units": "degree", **meta}, timestamp=timestamp)
                 else:
                     plugin.publish(data_names['wind_speed'], np.nan,
-                                   meta={"units": units}, timestamp=timestamp)
+                                   meta={"units": units, **meta}, timestamp=timestamp)
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree_north"}, timestamp=timestamp)
+                                   meta={"units": "degree", **meta}, timestamp=timestamp)
             except:
                 print("keyboard interrupt")
                 break
