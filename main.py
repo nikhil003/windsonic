@@ -2,8 +2,7 @@ import numpy as np
 import serial
 from waggle.plugin import Plugin
 from argparse import ArgumentParser
-from datetime import datetime, timezone
-import time
+
 
 def translate_units(units: str) -> str:
     if units == "M":
