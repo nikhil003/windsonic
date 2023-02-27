@@ -1,0 +1,14 @@
+name: "windsonic-2d"
+description: "WSN plugin for Windsonic 2D ultrasonic anemometer"
+keywords: "wind"
+authors: "Nikhil Garg <nikhilgarg.gju@gmail.com>"
+collaborators: "Raj Sankaran, Richard Hurley"
+funding: ""
+license: ""
+homepage: "https://github.com/nikhil003/windsonic/blob/main/README.md"
+source:
+  architectures:
+    - "linux/amd64"
+    - "linux/arm64"
+url: ""
+branch: "main"
