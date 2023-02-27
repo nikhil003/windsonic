@@ -4,6 +4,7 @@ from waggle.plugin import Plugin
 from argparse import ArgumentParser
 from datetime import datetime, timezone
 
+
 def translate_units(units: str) -> str:
     if units == "M":
         return "metres/second"
@@ -75,4 +76,5 @@ if __name__ == "__main__":
                         default=9600, help='baud rate for the device')
 
     args = parser.parse_args()
+
     main(args.device, args.baud_rate)
