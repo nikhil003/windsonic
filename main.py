@@ -1,5 +1,8 @@
 import numpy as np
 import serial
+from waggle.plugin import Plugin
+from argparse import ArgumentParser
+from datetime import datetime, timezone
 
 def translate_units(units: str) -> str:
     if units == "M":
@@ -15,30 +18,59 @@ def translate_units(units: str) -> str:
     else:
         raise ValueError("Invalid unit value")
 
-ser = serial.Serial('/dev/ttyUSB0', baudrate=9600,
-                    bytesize=serial.EIGHTBITS,
-                    parity=serial.PARITY_NONE,
-                    stopbits=serial.STOPBITS_ONE)
 
-print("Wind direction, wind speed, units")
+def main(*args):
+    ser = serial.Serial(args[0], baudrate=args[1],
+                        bytesize=serial.EIGHTBITS,
+                        parity=serial.PARITY_NONE,
+                        stopbits=serial.STOPBITS_ONE)
 
-while True:
-    try:
-        line = str(ser.readline(), 'utf-8').strip()
-        data_values=line.split(',')
+    #print("Wind direction, wind speed, units")
 
-        wind_direction=np.nan
-        if data_values[1] != '':
-            wind_direction=float(data_values[1])
+    data_names = {"wind_speed": "env.wind.magnitude",
+                  "wind_directon": "env.wind.direction"}
 
-        wind_speed=float(data_values[2])
-        units=data_values[3]
-        status=data_values[4]
+    with Plugin() as plugin:
+        while True:
+            try:
+                line = str(ser.readline(), 'utf-8').strip()
+                data_values=line.split(',')
 
-        if status == '00':
-            print("wd:",wind_direction,"ws:",wind_speed,"units:",translate_units(units))
-        else:
-            print("wd:",wind_direction,"ws:",wind_speed,"units:",translate_units(units))
-    except:
-        print("keyboard interrupt")
-        break
+                wind_direction=np.nan
+                if data_values[1] != '':
+                    wind_direction=float(data_values[1])
+
+                wind_speed=float(data_values[2])
+                units=data_values[3]
+                status=data_values[4]
+
+                # get the UTC time stamp
+                timestamp = datetime.now(tz=timezone.utc).replace(tzinfo=None).timestamp()
+
+                if status == '00':
+                    plugin.publish(data_names['wind_speed'], wind_speed,
+                                   meta={"units": units}, timestamp=timestamp)
+                    plugin.publish(data_names['wind_direction'], wind_direction,
+                                   meta={"units": "degree_north"}, timestamp=timestamp)
+                else:
+                    plugin.publish(data_names['wind_speed'], np.nan,
+                                   meta={"units": units}, timestamp=timestamp)
+                    plugin.publish(data_names['wind_direction'], wind_direction,
+                                   meta={"units": "degree_north"}, timestamp=timestamp)
+            except:
+                print("keyboard interrupt")
+                break
+
+    if not ser.closed():
+        ser.close()
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="plugin for pushing windsonic 2d anemometer data through WSN")
+
+    parser.add_argument('--device', type=str, dest='device',
+                        default='/dev/ttyUSB0', help='device to read')
+    parser.add_argument('--baud_rate', type=int, dest='baud_rate',
+                        default=9600, help='baud rate for the device')
+
+    args = parser.parse_args()
+    main(args.device, args.baud_rate)
