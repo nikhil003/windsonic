@@ -19,7 +19,7 @@ def translate_units(units: str) -> str:
         raise ValueError("Invalid unit value")
 
 
-def main(*args):
+def main(*args, **kwargs):
     ser = serial.Serial(args[0], baudrate=args[1],
                         bytesize=serial.EIGHTBITS,
                         parity=serial.PARITY_NONE,
@@ -46,6 +46,9 @@ def main(*args):
                 units=data_values[3]
                 status=data_values[4]
 
+                if kwargs.get('debug', False):
+                    print(wind_speed, wind_direction, translate_units(units))
+
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
                                    meta={"units": translate_units(units), **meta})
@@ -71,7 +74,9 @@ if __name__ == "__main__":
                         default='/dev/ttyUSB0', help='device to read')
     parser.add_argument('--baud_rate', type=int, dest='baud_rate',
                         default=9600, help='baud rate for the device')
+    parser.add_argument('--debug', action='store_true', dest='debug',
+                        help='command to run script in debug mode')
 
     args = parser.parse_args()
 
-    main(args.device, args.baud_rate)
+    main(args.device, args.baud_rate, debug=args.debug)
