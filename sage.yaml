@@ -11,4 +11,4 @@ source:
     - "linux/amd64"
     - "linux/arm64"
   url: "https://github.com/nikhil003/windsonic"
-  branch: "main"
+  branch: "master"
