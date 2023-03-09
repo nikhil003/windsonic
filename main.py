@@ -71,7 +71,7 @@ if __name__ == "__main__":
     parser = ArgumentParser(description="plugin for pushing windsonic 2d anemometer data through WSN")
 
     parser.add_argument('--device', type=str, dest='device',
-                        default='/dev/ttyUSB0', help='device to read')
+                        default='/dev/ttyUSB5', help='device to read')
     parser.add_argument('--baud_rate', type=int, dest='baud_rate',
                         default=9600, help='baud rate for the device')
     parser.add_argument('--debug', action='store_true', dest='debug',
