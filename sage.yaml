@@ -12,3 +12,8 @@ source:
     - "linux/arm64"
   url: "https://github.com/nikhil003/windsonic"
   branch: "master"
+
+metadata:
+  ontology:
+  - env.wind.magnitude
+  - env.wind.from_direction
