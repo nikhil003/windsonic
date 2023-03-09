@@ -5,7 +5,7 @@ authors: "Nikhil Garg <nikhilgarg.gju@gmail.com>"
 collaborators: "Raj Sankaran, Richard Hurley"
 funding: ""
 license: ""
-homepage: "https://github.com/nikhil003/windsonic/blob/main/README.md"
+homepage: "https://github.com/nikhil003/windsonic/blob/master/README.md"
 source:
   architectures:
     - "linux/amd64"
