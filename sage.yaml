@@ -16,4 +16,4 @@ source:
 metadata:
   ontology:
   - env.wind.magnitude
-  - env.wind.direction
+  - env.wind.from_direction

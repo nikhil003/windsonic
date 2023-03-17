@@ -28,7 +28,7 @@ def main(*args, **kwargs):
     #print("Wind direction, wind speed, units")
 
     data_names = {"wind_speed": "env.wind.magnitude",
-                  "wind_direction": "env.wind.direction"}
+                  "wind_direction": "env.wind.from_direction"}
 
     meta = {"sensor": "windsonic60"}
 
@@ -36,29 +36,31 @@ def main(*args, **kwargs):
         while True:
             try:
                 line = str(ser.readline(), 'utf-8').strip()
-                data_values=line.split(',')
+                data_values = line.split(',')
 
-                wind_direction=-9999.0
+                wind_direction = -9999.0
                 if data_values[1] != '':
-                    wind_direction=float(data_values[1])
+                    wind_direction = float(data_values[1])
 
-                wind_speed=float(data_values[2])
-                units=data_values[3]
-                status=data_values[4]
+                wind_speed = float(data_values[2])
+                units = data_values[3]
+                status = data_values[4]
 
                 if kwargs.get('debug', False):
                     print(wind_speed, wind_direction, translate_units(units))
 
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
-                                   meta={"units": translate_units(units), **meta})
+                                   meta={"units": translate_units(units),
+                                         "missing": -9999.0, **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", "orientation": "from", **meta})
+                                   meta={"units": "degree", "missing": -9999.0, **meta})
                 else:
                     plugin.publish(data_names['wind_speed'], -9999.0,
-                                   meta={"units": translate_units(units), **meta})
+                                   meta={"units": translate_units(units),
+                                         "missing": -9999.0, **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", "orientation": "from", **meta})
+                                   meta={"units": "degree", "missing": -9999.0, **meta})
             except Exception as e:
                 print("keyboard interrupt")
                 print(e)
@@ -67,8 +69,10 @@ def main(*args, **kwargs):
     if not ser.closed:
         ser.close()
 
+
 if __name__ == "__main__":
-    parser = ArgumentParser(description="plugin for pushing windsonic 2d anemometer data through WSN")
+    parser = ArgumentParser(
+        description="plugin for pushing windsonic 2d anemometer data through WSN")
 
     parser.add_argument('--device', type=str, dest='device',
                         default='/dev/ttyUSB5', help='device to read')
