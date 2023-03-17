@@ -28,7 +28,7 @@ def main(*args, **kwargs):
     #print("Wind direction, wind speed, units")
 
     data_names = {"wind_speed": "env.wind.magnitude",
-                  "wind_direction": "env.wind.from_direction"}
+                  "wind_direction": "env.wind.direction"}
 
     meta = {"sensor": "windsonic60"}
 
@@ -53,12 +53,12 @@ def main(*args, **kwargs):
                     plugin.publish(data_names['wind_speed'], wind_speed,
                                    meta={"units": translate_units(units), **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", **meta})
+                                   meta={"units": "degree", "orientation": "from", **meta})
                 else:
                     plugin.publish(data_names['wind_speed'], np.nan,
                                    meta={"units": translate_units(units), **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
-                                   meta={"units": "degree", **meta})
+                                   meta={"units": "degree", "orientation": "from", **meta})
             except Exception as e:
                 print("keyboard interrupt")
                 print(e)
