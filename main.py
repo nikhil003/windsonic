@@ -38,7 +38,7 @@ def main(*args, **kwargs):
                 line = str(ser.readline(), 'utf-8').strip()
                 data_values=line.split(',')
 
-                wind_direction=np.nan
+                wind_direction=-9999.0
                 if data_values[1] != '':
                     wind_direction=float(data_values[1])
 
@@ -55,7 +55,7 @@ def main(*args, **kwargs):
                     plugin.publish(data_names['wind_direction'], wind_direction,
                                    meta={"units": "degree", "orientation": "from", **meta})
                 else:
-                    plugin.publish(data_names['wind_speed'], np.nan,
+                    plugin.publish(data_names['wind_speed'], -9999.0,
                                    meta={"units": translate_units(units), **meta})
                     plugin.publish(data_names['wind_direction'], wind_direction,
                                    meta={"units": "degree", "orientation": "from", **meta})
