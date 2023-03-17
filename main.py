@@ -52,22 +52,22 @@ def main(*args, **kwargs):
                 if status == '00':
                     plugin.publish(data_names['wind_speed'], wind_speed,
                                    meta={"units": translate_units(units),
-                                         "missing": -9999.0, **meta})
+                                         "missing": "-9999.0", **meta})
                     plugin.publish(data_names['wind_direction'],
                                    wind_direction,
                                    meta={"units": "degree",
                                          "orientation": "from",
-                                         "missing": -9999.0,
+                                         "missing": "-9999.0",
                                          **meta})
                 else:
                     plugin.publish(data_names['wind_speed'], -9999.0,
                                    meta={"units": translate_units(units),
-                                         "missing": -9999.0, **meta})
+                                         "missing": "-9999.0", **meta})
                     plugin.publish(data_names['wind_direction'],
                                    wind_direction,
                                    meta={"units": "degree",
                                          "orientation": "from",
-                                         "missing": -9999.0,
+                                         "missing": "-9999.0",
                                          **meta})
             except Exception as e:
                 print("keyboard interrupt")
